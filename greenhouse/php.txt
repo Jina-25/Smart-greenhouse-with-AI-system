@@ -1,0 +1,40 @@
+-- 1. Reset the live monitoring table
+DROP TABLE IF EXISTS `current_plant`;
+CREATE TABLE `current_plant` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plant_name` varchar(50) DEFAULT 'None',
+  `temperature` float DEFAULT 0,
+  `humidity` float DEFAULT 0,
+  `soil_moisture` float DEFAULT 0,
+  `light` float DEFAULT 0,
+  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+
+-- 2. Create exactly ONE row for live monitoring, set to Stevia
+INSERT INTO `current_plant` (`id`, `plant_name`) VALUES (1, 'Stevia');
+
+-- 3. Create the optimal settings table
+CREATE TABLE IF NOT EXISTS `plants_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plant_name` varchar(50) NOT NULL UNIQUE,
+  `temperature` float DEFAULT NULL,
+  `humidity` float DEFAULT NULL,
+  `soil_moisture` float DEFAULT NULL,
+  `light` float DEFAULT NULL,
+  `recorded_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+
+-- 4. Fill the optimal settings for all plants (including Spinach 5555 lux)
+INSERT INTO `plants_data` (`plant_name`, `temperature`, `humidity`, `soil_moisture`, `light`) 
+VALUES ('Basil', 22.0, 65.0, 60.0, 15400)
+ON DUPLICATE KEY UPDATE `temperature`=22.0, `humidity`=65.0, `soil_moisture`=60.0, `light`=15400;
+
+INSERT INTO `plants_data` (`plant_name`, `temperature`, `humidity`, `soil_moisture`, `light`) 
+VALUES ('Stevia', 23.5, 50.0, 60.0, 6000)
+ON DUPLICATE KEY UPDATE `temperature`=23.5, `humidity`=50.0, `soil_moisture`=60.0, `light`=6000;
+
+INSERT INTO `plants_data` (`plant_name`, `temperature`, `humidity`, `soil_moisture`, `light`) 
+VALUES ('Spinach', 20.0, 70.0, 70.0, 5555)
+ON DUPLICATE KEY UPDATE `temperature`=20.0, `humidity`=70.0, `soil_moisture`=70.0, `light`=5555;
